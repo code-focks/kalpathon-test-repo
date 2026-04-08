@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server'
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const category = searchParams.get('category')
-  const radius = searchParams.get('radius')
+  // const radius = searchParams.get('radius')
   const dateFrom = searchParams.get('dateFrom')
 
   try {
