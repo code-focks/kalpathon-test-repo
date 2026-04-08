@@ -1,6 +1,9 @@
 'use client'
 
 import { useState } from 'react'
+import dynamic from 'next/dynamic'
+
+const QrScanner = dynamic(() => import('./QrScanner'), { ssr: false })
 
 export default function ScannerPage() {
   const [scannedCode, setScannedCode] = useState<string | null>(null)
@@ -9,7 +12,7 @@ export default function ScannerPage() {
   const handleScan = (result: string) => {
     setScannedCode(result)
     setLastScanned([
-      { name: 'Attendee Name', time: new Date().toLocaleTimeString() },
+      { name: result, time: new Date().toLocaleTimeString() },
       ...lastScanned,
     ].slice(0, 10))
   }
@@ -22,17 +25,14 @@ export default function ScannerPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Camera/Scanner area */}
           <div className="lg:col-span-2">
-            <div className="bg-black rounded-lg aspect-square flex items-center justify-center text-white text-center">
-              <div>
-                <p className="text-lg mb-2">📷 QR Scanner</p>
-                <p className="text-sm text-gray-400">Camera placeholder — implement html5-qrcode here</p>
-              </div>
+            <div className="bg-black rounded-lg aspect-square overflow-hidden">
+              <QrScanner onScan={handleScan} />
             </div>
 
-            {scannedCode && (
+            {scannedCode && lastScanned[0] && (
               <div className="mt-6 p-4 bg-green-50 border border-green-300 rounded-lg">
                 <p className="text-green-800 font-semibold">✓ Check-in Successful</p>
-                <p className="text-gray-700">Attendee Name checked in at 10:45 AM</p>
+                <p className="text-gray-700">{scannedCode} checked in at {lastScanned[0].time}</p>
               </div>
             )}
           </div>
